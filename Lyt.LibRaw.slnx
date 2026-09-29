@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Lyt.LibRaw/Lyt.LibRaw.csproj" Id="974bc33f-b308-4087-9d47-1e568141ff32">
+    <Platform Project="x64" />
+  </Project>
+</Solution>
