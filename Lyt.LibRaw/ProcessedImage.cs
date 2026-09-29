@@ -1,7 +1,4 @@
-﻿using Sdcb.LibRaw.Natives;
-using System;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>Represents a processed image.</summary>
 public unsafe class ProcessedImage : IDisposable

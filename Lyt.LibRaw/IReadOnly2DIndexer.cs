@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>
 /// An interface for a read-only two-dimensional indexer.

@@ -1,9 +1,4 @@
-﻿using Sdcb.LibRaw.Natives;
-using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>Represents a set of output parameters for LibRaw processing.</summary>
 public record OutputParams

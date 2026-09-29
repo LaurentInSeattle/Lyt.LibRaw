@@ -1,9 +1,4 @@
-﻿using Sdcb.LibRaw.Natives;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Sdcb.LibRaw.Indexers;
+﻿namespace Sdcb.LibRaw.Indexers;
 
 internal class PreMultiplerIndexer : IReadOnlyList<float>
 {

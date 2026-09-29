@@ -1,9 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-#if NET6_0_OR_GREATER
+﻿#if NET6_0_OR_GREATER
 [assembly: InternalsVisibleTo("Sdcb.LibRaw.UnitTests")]
 
 namespace Sdcb.LibRaw.Natives

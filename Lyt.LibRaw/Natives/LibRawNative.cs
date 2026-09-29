@@ -1,8 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-
-namespace Sdcb.LibRaw.Natives;
+﻿namespace Sdcb.LibRaw.Natives;
 
 /// <summary>
 /// Provides access to native LibRaw functions.

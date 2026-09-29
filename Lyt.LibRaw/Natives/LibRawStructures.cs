@@ -1,9 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
-namespace Sdcb.LibRaw.Natives;
-
-#pragma warning disable CS1591
+﻿namespace Sdcb.LibRaw.Natives;
 
 /// <summary>
 /// Represents an image that has been processed by LibRaw.

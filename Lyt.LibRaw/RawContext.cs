@@ -1,11 +1,4 @@
-﻿using Sdcb.LibRaw.Indexers;
-using Sdcb.LibRaw.Natives;
-using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>
 /// A C# wrapper for the Libraw C API, providing high-level features to work with raw images.
@@ -18,12 +11,11 @@ public class RawContext : IDisposable
     /// <summary>
     /// The converted C structure from libraw_data_t pointer, it's unsafe.
     /// </summary>
-    internal protected LibRawData RawData
+    public LibRawData RawData
     {
         get => Marshal.PtrToStructure<LibRawData>(_r);
-#if NET6_0_OR_GREATER
+
         [SupportedOSPlatform("windows")]
-#endif
         set => Marshal.StructureToPtr(value, _r, fDeleteOld: false);
     }
 

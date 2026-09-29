@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-
+﻿
 namespace Sdcb.LibRaw.Natives;
 
 [StructLayout(LayoutKind.Sequential)]

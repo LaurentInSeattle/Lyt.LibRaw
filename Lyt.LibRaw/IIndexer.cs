@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>
 /// Interface for creating a generic indexer data structure that supports read and write access.

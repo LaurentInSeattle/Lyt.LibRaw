@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Sdcb.LibRaw.Natives;
+﻿namespace Sdcb.LibRaw.Natives;
 
 [StructLayout(LayoutKind.Explicit)]
 internal struct LibRawDataX86

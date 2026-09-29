@@ -1,10 +1,4 @@
-﻿using Sdcb.LibRaw.Natives;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
-namespace Sdcb.LibRaw.Indexers;
+﻿namespace Sdcb.LibRaw.Indexers;
 
 internal class UserMultiplierIndexer : IIndexer<float>
 {

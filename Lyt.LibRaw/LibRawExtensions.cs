@@ -1,9 +1,4 @@
-﻿using Sdcb.LibRaw.Natives;
-using System;
-using System.IO;
-using System.Runtime.Versioning;
-
-namespace Sdcb.LibRaw;
+﻿namespace Sdcb.LibRaw;
 
 /// <summary>
 /// Provides extension methods for the LibRaw library.
