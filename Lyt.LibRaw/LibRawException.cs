@@ -13,7 +13,7 @@ public class LibRawException : Exception
     public LibRawException(LibRawError error, string? message)
         : base(message ?? $"ErrorCode: {(int)error}({error}), {Marshal.PtrToStringAnsi(LibRawNative.GetErrorMessage(error))!}")
     {
-        ErrorCode = error;
+        this.ErrorCode = error;
     }
 
     /// <summary>
@@ -23,13 +23,13 @@ public class LibRawException : Exception
     public LibRawException(string message)
                    : base(message)
     {
-        ErrorCode = LibRawError.UnspecifiedError;
+        this.ErrorCode = LibRawError.UnspecifiedError;
     }
 
     /// <summary>
     /// Gets a string that describes the error set by the <see cref="ErrorCode"/> property.
     /// </summary>
-    public string ErrorExplain => Marshal.PtrToStringAnsi(LibRawNative.GetErrorMessage(ErrorCode))!;
+    public string ErrorExplain => Marshal.PtrToStringAnsi(LibRawNative.GetErrorMessage(this.ErrorCode))!;
 
     /// <summary>
     /// Gets the error code that describes the error that caused the exception.

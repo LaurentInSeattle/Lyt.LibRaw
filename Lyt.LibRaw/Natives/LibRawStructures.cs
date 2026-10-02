@@ -49,9 +49,9 @@ public struct LibRawProcessedImage
     /// <returns>A span containing the image data in the specified format.</returns>
     public unsafe Span<T> GetData<T>()
     {
-        fixed (void* pfirstData = &FirstData)
+        fixed (void* pfirstData = &this.FirstData)
         {
-            return new Span<T>(pfirstData, DataSize / Marshal.SizeOf<T>());
+            return new Span<T>(pfirstData, this.DataSize / Marshal.SizeOf<T>());
         }
     }
 }
@@ -158,7 +158,7 @@ public struct LibRawImageParams
     /// <summary>
     /// Span object that contains the XMP metadata for the image, obtained by dereferencing the pointer in XmpDataPtr.
     /// </summary>
-    public readonly unsafe Span<byte> XmpData => XmpDataPtr != IntPtr.Zero ? new Span<byte>(XmpDataPtr.ToPointer(), XmpLength) : null;
+    public readonly unsafe Span<byte> XmpData => this.XmpDataPtr != IntPtr.Zero ? new Span<byte>(this.XmpDataPtr.ToPointer(), this.XmpLength) : null;
 }
 
 /// <summary>Struct containing lens maker notes data.</summary>

@@ -3,12 +3,12 @@
 internal class UserMultiplierIndexer : IIndexer<float>
 {
     private readonly IntPtr _r;
-    private bool _disposed;
+    private readonly bool _disposed;
 
     public UserMultiplierIndexer(IntPtr r, bool disposed)
     {
-        _r = r;
-        _disposed = disposed;
+        this._r = r;
+        this._disposed = disposed;
     }
 
     /// <seealso cref="LibRawNative.SetUserMultiplier"/> 
@@ -17,20 +17,24 @@ internal class UserMultiplierIndexer : IIndexer<float>
     {
         get
         {
-            CheckDisposed();
-            if (index < 0 || index >= Count)
+            this.CheckDisposed();
+            if (index < 0 || index >= this.Count)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
 
-            LibRawData data = Marshal.PtrToStructure<LibRawData>(_r);
+            LibRawData data = Marshal.PtrToStructure<LibRawData>(this._r);
             return data.OutputParams.UserMultipliers[index];
         }
         set
         {
-            CheckDisposed();
-            if (index < 0 || index >= Count)
+            this.CheckDisposed();
+            if (index < 0 || index >= this.Count)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
 
-            LibRawNative.SetUserMultiplier(_r, index, value);
+            LibRawNative.SetUserMultiplier(this._r, index, value);
         }
     }
 
@@ -38,20 +42,19 @@ internal class UserMultiplierIndexer : IIndexer<float>
 
     public IEnumerator<float> GetEnumerator()
     {
-        for (int i = 0; i < Count; i++)
+        for (int i = 0; i < this.Count; i++)
         {
             yield return this[i];
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
     {
-        if (_disposed)
+        if (this._disposed)
+        {
             throw new ObjectDisposedException(nameof(RawContext));
+        }
     }
 }

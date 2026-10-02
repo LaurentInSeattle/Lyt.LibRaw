@@ -13,7 +13,7 @@ public static class LibRawExtensions
     /// <returns>The ProcessedImage object.</returns>
     public static ProcessedImage ExportRawImage(this RawContext r, Action<OutputParams> configure)
     {
-        if (r is null) throw new ArgumentNullException(nameof(r));
+        ArgumentNullException.ThrowIfNull(r);
 
         if (((int)r.Progress & LibRawNative.ProgressThumbMask) < (int)LibRawProgress.LoadRaw)
         {
@@ -37,7 +37,7 @@ public static class LibRawExtensions
 
     private static void PreCheckAndUnpack(RawContext r)
     {
-        if (r is null) throw new ArgumentNullException(nameof(r));
+        ArgumentNullException.ThrowIfNull(r);
 
         if (((int)r.Progress & LibRawNative.ProgressThumbMask) < (int)LibRawProgress.LoadRaw)
         {
@@ -53,7 +53,7 @@ public static class LibRawExtensions
     /// <returns>The ProcessedImage object.</returns>
     public static ProcessedImage ExportThumbnail(this RawContext r, int thumbnailIndex = 0)
     {
-        if (r is null) throw new ArgumentNullException(nameof(r));
+        ArgumentNullException.ThrowIfNull(r);
 
         r.UnpackThumbnail(thumbnailIndex);
         return r.MakeDcrawMemoryThumbnail();
@@ -88,7 +88,7 @@ public static class LibRawExtensions
 
     private static void PreCheckAndUnpack(RawContext r, string fileName)
     {
-        if (r is null) throw new ArgumentNullException(nameof(r));
+        ArgumentNullException.ThrowIfNull(r);
 
         string ext = Path.GetExtension(fileName);
         if (ext.Equals(".tiff", StringComparison.OrdinalIgnoreCase) || ext.Equals(".tif", StringComparison.OrdinalIgnoreCase))
@@ -114,7 +114,7 @@ public static class LibRawExtensions
     /// <param name="thumbnailIndex">The thumbnail index.</param>
     public static void SaveThumbnail(this RawContext r, string fileName, int thumbnailIndex = 0)
     {
-        if (r is null) throw new ArgumentNullException(nameof(r));
+        ArgumentNullException.ThrowIfNull(r);
 
         r.UnpackThumbnail(thumbnailIndex);
         r.WriteDcrawThumbnail(fileName);

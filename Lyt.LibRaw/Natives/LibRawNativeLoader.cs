@@ -1,60 +1,59 @@
-﻿#if NET6_0_OR_GREATER
-[assembly: InternalsVisibleTo("Sdcb.LibRaw.UnitTests")]
+﻿[assembly: InternalsVisibleTo("Sdcb.LibRaw.UnitTests")]
 
-namespace Sdcb.LibRaw.Natives
+namespace Sdcb.LibRaw.Natives;
+
+using System.Diagnostics;
+
+internal class LibRawNativeLoader
 {
-    internal class LibRawNativeLoader
+    static LibRawNativeLoader()
     {
-        static LibRawNativeLoader()
-        {
-            NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), LibRawImportResolver);
-        }
+        NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), LibRawImportResolver);
+    }
 
-        public static void Init()
-        {
-            // stub to ensure static constructor executed at least once.
-        }
+    public static void Init()
+    {
+        // stub to ensure static constructor executed at least once.
+    }
 
-        private static IntPtr LibRawImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    private static IntPtr LibRawImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        if (libraryName == LibRawNative.Dll)
         {
-            if (libraryName == LibRawNative.Dll)
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                if (NativeLibrary.TryLoad("raw_r.dll", assembly, searchPath, out IntPtr handle))
                 {
-                    if (NativeLibrary.TryLoad("raw_r.dll", assembly, searchPath, out IntPtr handle))
-                    {
-                        return handle;
-                    }
-                    else
-                    {
-                        return NativeLibrary.Load("libraw.dll", assembly, searchPath);
-                    }
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                {
-                    string[] deps = new[] { "libjpeg.so.8", "liblcms2.so", "libgomp.so.1" };
-                    foreach (string dep in deps)
-                    {
-                        if (!NativeLibrary.TryLoad(dep, assembly, searchPath, out IntPtr _))
-                        {
-                            Console.WriteLine($"[WARN]: Failed to load linux dependency: {dep}");
-                        }
-                    }
-
-                    return NativeLibrary.Load("libraw_r.so.23", assembly, searchPath);
-                }
-                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
-                {
-                    return NativeLibrary.Load("libraw.23.dylib", assembly, searchPath);
+                    return handle;
                 }
                 else
                 {
-                    throw new NotSupportedException("Not support current OS's LibRaw.");
+                    return NativeLibrary.Load("libraw.dll", assembly, searchPath);
                 }
             }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                string[] deps = ["libjpeg.so.8", "liblcms2.so", "libgomp.so.1"];
+                foreach (string dep in deps)
+                {
+                    if (!NativeLibrary.TryLoad(dep, assembly, searchPath, out IntPtr _))
+                    {
+                        Debug.WriteLine($"[WARN]: Failed to load linux dependency: {dep}");
+                    }
+                }
 
-            return IntPtr.Zero;
+                return NativeLibrary.Load("libraw_r.so.23", assembly, searchPath);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                return NativeLibrary.Load("libraw.23.dylib", assembly, searchPath);
+            }
+            else
+            {
+                throw new NotSupportedException("Not support current OS's LibRaw.");
+            }
         }
+
+        return IntPtr.Zero;
     }
 }
-#endif

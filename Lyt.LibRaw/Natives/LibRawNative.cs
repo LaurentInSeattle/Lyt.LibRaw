@@ -1,5 +1,9 @@
 ﻿namespace Sdcb.LibRaw.Natives;
 
+#pragma warning disable CA1401 // P/Invokes should not be visible
+#pragma warning disable SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+#pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
+
 /// <summary>
 /// Provides access to native LibRaw functions.
 /// </summary>
@@ -96,10 +100,7 @@ public static class LibRawNative
     /// <remarks>The original C API macro: LIBRAW_FATAL_ERROR(ec)</remarks>
     /// <param name="errorCode">The error code to evaluate.</param>
     /// <returns>True if the error code is a fatal error, otherwise false.</returns>
-    public static bool IsFatalError(LibRawError errorCode)
-    {
-        return (int)errorCode < -100000;
-    }
+    public static bool IsFatalError(LibRawError errorCode) => (int)errorCode < -100000;
 
     /// <summary>Represents the X-Trans sensor type, which has a value of 9.</summary>
     /// <remarks>The original C API macro: LIBRAW_XTRANS</remarks>
@@ -594,4 +595,9 @@ public static class LibRawNative
     [DllImport(Dll, EntryPoint = "default_data_callback")]
     public static extern void DefaultDataCallback(IntPtr data, string file, int offset);
     #endregion
+
+#pragma warning restore CA2101 // Specify marshaling for P/Invoke string arguments
+#pragma warning restore CA1401 // P/Invokes should not be visible
+#pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+
 }

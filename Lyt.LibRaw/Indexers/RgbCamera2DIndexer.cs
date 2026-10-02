@@ -7,8 +7,8 @@ internal class RgbCamera2DIndexer : IReadOnly2DIndexer<float>
 
     public RgbCamera2DIndexer(IntPtr r, bool disposed)
     {
-        _r = r;
-        _disposed = disposed;
+        this._r = r;
+        this._disposed = disposed;
     }
 
     /// <seealso cref="LibRawNative.GetRgbCameraMatrix(IntPtr, int, int)"/>
@@ -16,13 +16,15 @@ internal class RgbCamera2DIndexer : IReadOnly2DIndexer<float>
     {
         get
         {
-            CheckDisposed();
-            if (index < 0 || index >= Count)
+            this.CheckDisposed();
+            if (index < 0 || index >= this.Count)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
 
-            int x = index % Width;
-            int y = index / Width;
-            return LibRawNative.GetRgbCameraMatrix(_r, y, x);
+            int x = index % this.Width;
+            int y = index / this.Width;
+            return LibRawNative.GetRgbCameraMatrix(this._r, y, x);
         }
     }
 
@@ -31,34 +33,40 @@ internal class RgbCamera2DIndexer : IReadOnly2DIndexer<float>
     {
         get
         {
-            CheckDisposed();
-            if (y < 0 || y >= Height) throw new ArgumentOutOfRangeException(nameof(y), "Index is out of range.");
-            if (y < 0 || y >= Width) throw new ArgumentOutOfRangeException(nameof(x), "Index is out of range.");
+            this.CheckDisposed();
+            if (y < 0 || y >= this.Height)
+            {
+                throw new ArgumentOutOfRangeException(nameof(y), "Index is out of range.");
+            }
 
-            return LibRawNative.GetRgbCameraMatrix(_r, y, x);
+            if (y < 0 || y >= this.Width)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), "Index is out of range.");
+            }
+
+            return LibRawNative.GetRgbCameraMatrix(this._r, y, x);
         }
     }
 
-    public int Count => Width * Height;
+    public int Count => this.Width * this.Height;
     public int Width => 4;
     public int Height => 3;
 
     public IEnumerator<float> GetEnumerator()
     {
-        for (int i = 0; i < Count; i++)
+        for (int i = 0; i < this.Count; i++)
         {
             yield return this[i];
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
     {
-        if (_disposed)
+        if (this._disposed)
+        {
             throw new ObjectDisposedException(nameof(RawContext));
+        }
     }
 }

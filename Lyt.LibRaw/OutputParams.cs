@@ -142,14 +142,14 @@ public record OutputParams
 
         unsafe static OutputParams FromLibRawX64(IntPtr rawData)
         {
-            LibRawDataX64* data = (LibRawDataX64*)rawData;
+            var data = (LibRawDataX64*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             return ReadFromNative(r);
         }
 
         unsafe static OutputParams FromLibRawX86(IntPtr rawData)
         {
-            LibRawDataX86* data = (LibRawDataX86*)rawData;
+            var data = (LibRawDataX86*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             return ReadFromNative(r);
         }
@@ -210,14 +210,25 @@ public record OutputParams
     public void Commit(IntPtr rawData)
     {
         // Check array lengths
-        if (Aber.Length != 4)
-            throw new InvalidOperationException($"{nameof(Aber)} array must contain exactly 4 elements");
-        if (Gamma.Length != 6)
-            throw new InvalidOperationException($"{nameof(Gamma)} array must contain exactly 6 elements");
-        if (UserMultipliers.Length != 4)
-            throw new InvalidOperationException($"{nameof(UserMultipliers)} array must contain exactly 4 elements");
-        if (UserCBlack.Length != 4)
-            throw new InvalidOperationException($"{nameof(UserCBlack)} array must contain exactly 4 elements");
+        if (this.Aber.Length != 4)
+        {
+            throw new InvalidOperationException($"{nameof(this.Aber)} array must contain exactly 4 elements");
+        }
+
+        if (this.Gamma.Length != 6)
+        {
+            throw new InvalidOperationException($"{nameof(this.Gamma)} array must contain exactly 6 elements");
+        }
+
+        if (this.UserMultipliers.Length != 4)
+        {
+            throw new InvalidOperationException($"{nameof(this.UserMultipliers)} array must contain exactly 4 elements");
+        }
+
+        if (this.UserCBlack.Length != 4)
+        {
+            throw new InvalidOperationException($"{nameof(this.UserCBlack)} array must contain exactly 4 elements");
+        }
 
         if (IntPtr.Size == 8)
         {
@@ -230,64 +241,64 @@ public record OutputParams
 
         unsafe void UpdateX64(IntPtr rawData)
         {
-            LibRawDataX64* data = (LibRawDataX64*)rawData;
+            var data = (LibRawDataX64*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             UpdateRaw(r);
         }
 
         unsafe void UpdateX86(IntPtr rawData)
         {
-            LibRawDataX86* data = (LibRawDataX86*)rawData;
+            var data = (LibRawDataX86*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             UpdateRaw(r);
         }
 
         unsafe void UpdateRaw(NativeOutputParams* r)
         {
-            new uint[] { (uint)Greybox.Left, (uint)Greybox.Top, (uint)Greybox.Width, (uint)Greybox.Height }.AsSpan().CopyTo(new Span<uint>(r->Greybox, 4));
-            new uint[] { (uint)Cropbox.Left, (uint)Cropbox.Top, (uint)Cropbox.Width, (uint)Cropbox.Height }.AsSpan().CopyTo(new Span<uint>(r->Cropbox, 4));
+            new uint[] { (uint)this.Greybox.Left, (uint)this.Greybox.Top, (uint)this.Greybox.Width, (uint)this.Greybox.Height }.AsSpan().CopyTo(new Span<uint>(r->Greybox, 4));
+            new uint[] { (uint)this.Cropbox.Left, (uint)this.Cropbox.Top, (uint)this.Cropbox.Width, (uint)this.Cropbox.Height }.AsSpan().CopyTo(new Span<uint>(r->Cropbox, 4));
 
-            Aber.AsSpan().CopyTo(new Span<double>(r->Aber, 4));
-            Gamma.AsSpan().CopyTo(new Span<double>(r->Gamm, 6));
-            UserMultipliers.AsSpan().CopyTo(new Span<float>(r->UserMul, 4));
+            this.Aber.AsSpan().CopyTo(new Span<double>(r->Aber, 4));
+            this.Gamma.AsSpan().CopyTo(new Span<double>(r->Gamm, 6));
+            this.UserMultipliers.AsSpan().CopyTo(new Span<float>(r->UserMul, 4));
 
-            r->Bright = Brightness;
-            r->Threshold = Threshold;
-            r->HalfSize = HalfSize ? 1 : 0;
-            r->FourColorRgb = FourColorRgb ? 1 : 0;
-            r->Highlight = HighlightMode;
-            r->UseAutoWb = UseAutoWb ? 1 : 0;
-            r->UseCameraWb = UseCameraWb ? 1 : 0;
-            r->UseCameraMatrix = UseCameraMatrix ? 1 : 0;
-            r->OutputColor = (int)OutputColor;
-            r->OutputProfile = Marshal.StringToHGlobalAnsi(OutputProfile);
-            r->CameraProfile = Marshal.StringToHGlobalAnsi(CameraProfile);
-            r->BadPixels = Marshal.StringToHGlobalAnsi(BadPixels);
-            r->DarkFrame = Marshal.StringToHGlobalAnsi(DarkFrame);
-            r->OutputBps = OutputBps;
-            r->OutputTiff = OutputTiff ? 1 : 0;
-            r->OutputFlags = OutputFlags;
-            r->UserFlip = UserFlip;
-            r->UserQual = (int)UserQual;
-            r->UserBlack = UserBlack;
+            r->Bright = this.Brightness;
+            r->Threshold = this.Threshold;
+            r->HalfSize = this.HalfSize ? 1 : 0;
+            r->FourColorRgb = this.FourColorRgb ? 1 : 0;
+            r->Highlight = this.HighlightMode;
+            r->UseAutoWb = this.UseAutoWb ? 1 : 0;
+            r->UseCameraWb = this.UseCameraWb ? 1 : 0;
+            r->UseCameraMatrix = this.UseCameraMatrix ? 1 : 0;
+            r->OutputColor = (int)this.OutputColor;
+            r->OutputProfile = Marshal.StringToHGlobalAnsi(this.OutputProfile);
+            r->CameraProfile = Marshal.StringToHGlobalAnsi(this.CameraProfile);
+            r->BadPixels = Marshal.StringToHGlobalAnsi(this.BadPixels);
+            r->DarkFrame = Marshal.StringToHGlobalAnsi(this.DarkFrame);
+            r->OutputBps = this.OutputBps;
+            r->OutputTiff = this.OutputTiff ? 1 : 0;
+            r->OutputFlags = this.OutputFlags;
+            r->UserFlip = this.UserFlip;
+            r->UserQual = (int)this.UserQual;
+            r->UserBlack = this.UserBlack;
 
-            UserCBlack.AsSpan().CopyTo(new Span<int>(r->UserCblack, 4));
+            this.UserCBlack.AsSpan().CopyTo(new Span<int>(r->UserCblack, 4));
 
-            r->UserSat = UserSaturation;
-            r->MedPasses = MedianPasses;
-            r->AutoBrightThr = AutoBrightThr;
-            r->AdjustMaximumThr = AdjustMaximumThr;
-            r->NoAutoBright = NoAutoBright ? 1 : 0;
-            r->UseFujiRotate = UseFujiRotate ? 1 : 0;
-            r->GreenMatching = GreenMatching;
-            r->DcbIterations = DcbIterations;
-            r->DcbEnhanceFl = DcbEnhanceFl;
-            r->FbddNoiserd = FbddNoiserd;
-            r->ExpCorrec = ExpCorrec ? 1 : 0;
-            r->ExpShift = ExpShift;
-            r->ExpPreser = ExpPreser;
-            r->NoAutoScale = AutoScale ? 0 : 1;
-            r->NoInterpolation = Interpolation ? 0 : 1;
+            r->UserSat = this.UserSaturation;
+            r->MedPasses = this.MedianPasses;
+            r->AutoBrightThr = this.AutoBrightThr;
+            r->AdjustMaximumThr = this.AdjustMaximumThr;
+            r->NoAutoBright = this.NoAutoBright ? 1 : 0;
+            r->UseFujiRotate = this.UseFujiRotate ? 1 : 0;
+            r->GreenMatching = this.GreenMatching;
+            r->DcbIterations = this.DcbIterations;
+            r->DcbEnhanceFl = this.DcbEnhanceFl;
+            r->FbddNoiserd = this.FbddNoiserd;
+            r->ExpCorrec = this.ExpCorrec ? 1 : 0;
+            r->ExpShift = this.ExpShift;
+            r->ExpPreser = this.ExpPreser;
+            r->NoAutoScale = this.AutoScale ? 0 : 1;
+            r->NoInterpolation = this.Interpolation ? 0 : 1;
         }
     }
 
@@ -309,14 +320,14 @@ public record OutputParams
 
         unsafe static void FreeX64(IntPtr rawData)
         {
-            LibRawDataX64* data = (LibRawDataX64*)rawData;
+            var data = (LibRawDataX64*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             FreeRaw(r);
         }
 
         unsafe static void FreeX86(IntPtr rawData)
         {
-            LibRawDataX86* data = (LibRawDataX86*)rawData;
+            var data = (LibRawDataX86*)rawData;
             NativeOutputParams* r = &data->OutputParams;
             FreeRaw(r);
         }

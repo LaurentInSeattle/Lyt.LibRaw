@@ -13,10 +13,10 @@ public class RawContext : IDisposable
     /// </summary>
     public LibRawData RawData
     {
-        get => Marshal.PtrToStructure<LibRawData>(_r);
+        get => Marshal.PtrToStructure<LibRawData>(this._r);
 
         [SupportedOSPlatform("windows")]
-        set => Marshal.StructureToPtr(value, _r, fDeleteOld: false);
+        set => Marshal.StructureToPtr(value, this._r, fDeleteOld: false);
     }
 
     /// <summary>
@@ -25,8 +25,10 @@ public class RawContext : IDisposable
     /// <exception cref="ObjectDisposedException">Thrown when the object has been disposed.</exception>
     protected void CheckDisposed()
     {
-        if (_disposed)
+        if (this._disposed)
+        {
             throw new ObjectDisposedException(nameof(RawContext));
+        }
     }
 
     #region properties
@@ -36,8 +38,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            return LibRawNative.GetRawImageWidth(_r);
+            this.CheckDisposed();
+            return LibRawNative.GetRawImageWidth(this._r);
         }
     }
 
@@ -47,8 +49,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            return LibRawNative.GetRawImageHeight(_r);
+            this.CheckDisposed();
+            return LibRawNative.GetRawImageHeight(this._r);
         }
     }
 
@@ -58,8 +60,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            return LibRawNative.GetProcessedImageWidth(_r);
+            this.CheckDisposed();
+            return LibRawNative.GetProcessedImageWidth(this._r);
         }
     }
 
@@ -69,8 +71,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            return LibRawNative.GetProcessedImageHeight(_r);
+            this.CheckDisposed();
+            return LibRawNative.GetProcessedImageHeight(this._r);
         }
     }
 
@@ -78,7 +80,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -88,8 +90,8 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe LibRawProgress GetX86() => ((LibRawDataX86*)_r)->Progress;
-            unsafe LibRawProgress GetX64() => ((LibRawDataX64*)_r)->Progress;
+            unsafe LibRawProgress GetX86() => ((LibRawDataX86*)this._r)->Progress;
+            unsafe LibRawProgress GetX64() => ((LibRawDataX64*)this._r)->Progress;
         }
     }
 
@@ -99,7 +101,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -109,14 +111,14 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe bool GetX86() => ((LibRawDataX86*)_r)->OutputParams.OutputTiff != 0;
-            unsafe bool GetX64() => ((LibRawDataX64*)_r)->OutputParams.OutputTiff != 0;
+            unsafe bool GetX86() => ((LibRawDataX86*)this._r)->OutputParams.OutputTiff != 0;
+            unsafe bool GetX64() => ((LibRawDataX64*)this._r)->OutputParams.OutputTiff != 0;
         }
 
         set
         {
-            CheckDisposed();
-            LibRawNative.SetOutputTiff(_r, value ? 1 : 0);
+            this.CheckDisposed();
+            LibRawNative.SetOutputTiff(this._r, value ? 1 : 0);
         }
     }
 
@@ -126,7 +128,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -136,15 +138,19 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe int GetX86() => ((LibRawDataX86*)_r)->OutputParams.OutputBps;
-            unsafe int GetX64() => ((LibRawDataX64*)_r)->OutputParams.OutputBps;
+            unsafe int GetX86() => ((LibRawDataX86*)this._r)->OutputParams.OutputBps;
+            unsafe int GetX64() => ((LibRawDataX64*)this._r)->OutputParams.OutputBps;
         }
 
         set
         {
-            CheckDisposed();
-            if (value % 8 != 0) throw new ArgumentOutOfRangeException(nameof(value), "value must be a multiple of 8");
-            LibRawNative.SetOutputBitsPerSample(_r, value);
+            this.CheckDisposed();
+            if (value % 8 != 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value), "value must be a multiple of 8");
+            }
+
+            LibRawNative.SetOutputBitsPerSample(this._r, value);
         }
     }
 
@@ -154,7 +160,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -164,28 +170,28 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe LibRawColorSpace GetX86() => (LibRawColorSpace)((LibRawDataX86*)_r)->OutputParams.OutputColor;
-            unsafe LibRawColorSpace GetX64() => (LibRawColorSpace)((LibRawDataX64*)_r)->OutputParams.OutputColor;
+            unsafe LibRawColorSpace GetX86() => (LibRawColorSpace)((LibRawDataX86*)this._r)->OutputParams.OutputColor;
+            unsafe LibRawColorSpace GetX64() => (LibRawColorSpace)((LibRawDataX64*)this._r)->OutputParams.OutputColor;
         }
 
         set
         {
-            CheckDisposed();
-            LibRawNative.SetOutputColorSpace(_r, value);
+            this.CheckDisposed();
+            LibRawNative.SetOutputColorSpace(this._r, value);
         }
     }
 
     /// <summary>Camera multiplier indexer</summary>
     /// <remarks>Corresponds to the C API function: libraw_get_cam_mul</remarks>
-    public IReadOnlyList<float> CameraMultipler => new CameraMultiplerIndexer(_r, _disposed);
+    public IReadOnlyList<float> CameraMultipler => new CameraMultiplerIndexer(this._r, this._disposed);
 
     /// <summary>Pre multiplier indexer</summary>
     /// <remarks>Corresponds to the C API function: libraw_get_pre_mul</remarks>
-    public IReadOnlyList<float> PreMultipler => new PreMultiplerIndexer(_r, _disposed);
+    public IReadOnlyList<float> PreMultipler => new PreMultiplerIndexer(this._r, this._disposed);
 
     /// <summary>Gets the <see cref="IReadOnly2DIndexer{T}"/> instance for the RGB camera.</summary>
     /// <remarks>Corresponds to the C API function: libraw_get_rgb_cam</remarks>
-    public IReadOnly2DIndexer<float> RgbCamera => new RgbCamera2DIndexer(_r, _disposed);
+    public IReadOnly2DIndexer<float> RgbCamera => new RgbCamera2DIndexer(this._r, this._disposed);
 
     /// <summary>Gets the maximum color.</summary>
     /// <remarks>Corresponds to the C API function: libraw_get_color_maximum</remarks>
@@ -193,14 +199,14 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            return LibRawNative.GetColorMaximum(_r);
+            this.CheckDisposed();
+            return LibRawNative.GetColorMaximum(this._r);
         }
     }
 
     /// <summary>Gets or set the user multiplier.</summary>
     /// <remarks>Corresponds to the C API function: libraw_set_user_mul</remarks>
-    public IIndexer<float> UserMultiplier => new UserMultiplierIndexer(_r, _disposed);
+    public IIndexer<float> UserMultiplier => new UserMultiplierIndexer(this._r, this._disposed);
 
     /// <summary>Gets or sets the demosaic algorithm used to convert the raw data to an image.</summary>
     /// <remarks>Corresponds to the C API function: libraw_set_demosaic</remarks>
@@ -208,7 +214,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -218,13 +224,13 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe DemosaicAlgorithm GetX86() => (DemosaicAlgorithm)((LibRawDataX86*)_r)->OutputParams.UserQual;
-            unsafe DemosaicAlgorithm GetX64() => (DemosaicAlgorithm)((LibRawDataX64*)_r)->OutputParams.UserQual;
+            unsafe DemosaicAlgorithm GetX86() => (DemosaicAlgorithm)((LibRawDataX86*)this._r)->OutputParams.UserQual;
+            unsafe DemosaicAlgorithm GetX64() => (DemosaicAlgorithm)((LibRawDataX64*)this._r)->OutputParams.UserQual;
         }
         set
         {
-            CheckDisposed();
-            LibRawNative.SetDemosaicAlgorithm(_r, value);
+            this.CheckDisposed();
+            LibRawNative.SetDemosaicAlgorithm(this._r, value);
         }
     }
 
@@ -240,7 +246,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -250,19 +256,19 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe float GetX86() => ((LibRawDataX86*)_r)->OutputParams.AdjustMaximumThr;
-            unsafe float GetX64() => ((LibRawDataX64*)_r)->OutputParams.AdjustMaximumThr;
+            unsafe float GetX86() => ((LibRawDataX86*)this._r)->OutputParams.AdjustMaximumThr;
+            unsafe float GetX64() => ((LibRawDataX64*)this._r)->OutputParams.AdjustMaximumThr;
         }
         set
         {
-            CheckDisposed();
-            LibRawNative.SetAdjustMaximumThreshold(_r, value);
+            this.CheckDisposed();
+            LibRawNative.SetAdjustMaximumThreshold(this._r, value);
         }
     }
 
     /// <summary>Output gamma indexer</summary>
     /// <remarks>Corresponds to the C API function: libraw_set_gamma</remarks>
-    public IIndexer<float> Gamma => new GammaIndexer(_r, _disposed);
+    public IIndexer<float> Gamma => new GammaIndexer(this._r, this._disposed);
 
     /// <summary>Gets or sets a value indicating whether automatic brightness correction is enabled.</summary>
     /// <remarks>Corresponds to the C API function: libraw_set_no_auto_bright</remarks>
@@ -270,7 +276,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -280,13 +286,13 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe bool GetX86() => ((LibRawDataX86*)_r)->OutputParams.NoAutoBright == 0;
-            unsafe bool GetX64() => ((LibRawDataX64*)_r)->OutputParams.NoAutoBright == 0;
+            unsafe bool GetX86() => ((LibRawDataX86*)this._r)->OutputParams.NoAutoBright == 0;
+            unsafe bool GetX64() => ((LibRawDataX64*)this._r)->OutputParams.NoAutoBright == 0;
         }
         set
         {
-            CheckDisposed();
-            LibRawNative.SetAutoBrightnessCorrection(_r, value ? 0 : 1);
+            this.CheckDisposed();
+            LibRawNative.SetAutoBrightnessCorrection(this._r, value ? 0 : 1);
         }
     }
 
@@ -296,7 +302,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -306,13 +312,13 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe float GetX86() => ((LibRawDataX86*)_r)->OutputParams.Bright;
-            unsafe float GetX64() => ((LibRawDataX64*)_r)->OutputParams.Bright;
+            unsafe float GetX86() => ((LibRawDataX86*)this._r)->OutputParams.Bright;
+            unsafe float GetX64() => ((LibRawDataX64*)this._r)->OutputParams.Bright;
         }
         set
         {
-            CheckDisposed();
-            LibRawNative.SetBrightness(_r, value);
+            this.CheckDisposed();
+            LibRawNative.SetBrightness(this._r, value);
         }
     }
 
@@ -322,7 +328,7 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             if (IntPtr.Size == 8)
             {
                 return GetX64();
@@ -332,13 +338,13 @@ public class RawContext : IDisposable
                 return GetX86();
             }
 
-            unsafe int GetX86() => ((LibRawDataX86*)_r)->OutputParams.Highlight;
-            unsafe int GetX64() => ((LibRawDataX64*)_r)->OutputParams.Highlight;
+            unsafe int GetX86() => ((LibRawDataX86*)this._r)->OutputParams.Highlight;
+            unsafe int GetX64() => ((LibRawDataX64*)this._r)->OutputParams.Highlight;
         }
         set
         {
-            CheckDisposed();
-            LibRawNative.SetHighlightMode(_r, value);
+            this.CheckDisposed();
+            LibRawNative.SetHighlightMode(this._r, value);
         }
     }
     #endregion
@@ -347,8 +353,8 @@ public class RawContext : IDisposable
     /// <returns>A pointer to the underlying native object.</returns>
     public IntPtr UnsafeGetHandle()
     {
-        CheckDisposed();
-        return _r;
+        this.CheckDisposed();
+        return this._r;
     }
 
 
@@ -358,9 +364,9 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
+            this.CheckDisposed();
             LibRawDecoderInfo d = new();
-            LibRawException.ThrowIfFailed(LibRawNative.GetDecoderInfo(_r, (IntPtr)(&d)));
+            LibRawException.ThrowIfFailed(LibRawNative.GetDecoderInfo(this._r, (IntPtr)(&d)));
             return DecoderInfo.FromNative(d);
         }
     }
@@ -370,7 +376,7 @@ public class RawContext : IDisposable
     /// </summary>
     public RawContext(IntPtr libRawContext)
     {
-        _r = libRawContext;
+        this._r = libRawContext;
     }
 
     /// <summary>
@@ -378,7 +384,7 @@ public class RawContext : IDisposable
     /// </summary>
     ~RawContext()
     {
-        Dispose(false);
+        this.Dispose(false);
     }
 
     /// <summary>
@@ -386,7 +392,7 @@ public class RawContext : IDisposable
     /// </summary>
     public void Dispose()
     {
-        Dispose(true);
+        this.Dispose(true);
         GC.SuppressFinalize(this);
     }
 
@@ -397,16 +403,16 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_recycle</remarks>
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposed)
+        if (!this._disposed)
         {
-            if (_r != IntPtr.Zero)
+            if (this._r != IntPtr.Zero)
             {
-                LibRawNative.Recycle(_r);
-                LibRawNative.Close(_r);
-                _r = IntPtr.Zero;
+                LibRawNative.Recycle(this._r);
+                LibRawNative.Close(this._r);
+                this._r = IntPtr.Zero;
             }
 
-            _disposed = true;
+            this._disposed = true;
         }
     }
 
@@ -499,17 +505,60 @@ public class RawContext : IDisposable
         int unusedBits = 0, int otherFlags = 0, int blackLevel = 0,
         LibRawInitFlags flags = LibRawInitFlags.None) where T : struct
     {
-        if (bayerData.IsEmpty) throw new ArgumentNullException(nameof(bayerData));
-        if (width < 1) throw new ArgumentOutOfRangeException(nameof(width), "Width must be at least 1.");
-        if (height < 1) throw new ArgumentOutOfRangeException(nameof(height), "Height must be at least 1.");
-        if (leftMargin < 0) throw new ArgumentOutOfRangeException(nameof(leftMargin), "Left margin cannot be negative.");
-        if (topMargin < 0) throw new ArgumentOutOfRangeException(nameof(topMargin), "Top margin cannot be negative.");
-        if (rightMargin < 0) throw new ArgumentOutOfRangeException(nameof(rightMargin), "Right margin cannot be negative.");
-        if (bottomMargin < 0) throw new ArgumentOutOfRangeException(nameof(bottomMargin), "Bottom margin cannot be negative.");
-        if (unusedBits < 0) throw new ArgumentOutOfRangeException(nameof(unusedBits), "Unused bits cannot be negative.");
-        if (otherFlags < 0) throw new ArgumentOutOfRangeException(nameof(otherFlags), "Other flags cannot be negative.");
-        if (blackLevel < 0) throw new ArgumentOutOfRangeException(nameof(blackLevel), "Black level cannot be negative.");
-        if (bayerData.Length < width * height) throw new ArgumentException("The length of the bayer data array must be at least width * height.", nameof(bayerData));
+        if (bayerData.IsEmpty)
+        {
+            throw new ArgumentNullException(nameof(bayerData));
+        }
+
+        if (width < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(width), "Width must be at least 1.");
+        }
+
+        if (height < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height), "Height must be at least 1.");
+        }
+
+        if (leftMargin < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(leftMargin), "Left margin cannot be negative.");
+        }
+
+        if (topMargin < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(topMargin), "Top margin cannot be negative.");
+        }
+
+        if (rightMargin < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(rightMargin), "Right margin cannot be negative.");
+        }
+
+        if (bottomMargin < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(bottomMargin), "Bottom margin cannot be negative.");
+        }
+
+        if (unusedBits < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(unusedBits), "Unused bits cannot be negative.");
+        }
+
+        if (otherFlags < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(otherFlags), "Other flags cannot be negative.");
+        }
+
+        if (blackLevel < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(blackLevel), "Black level cannot be negative.");
+        }
+
+        if (bayerData.Length < width * height)
+        {
+            throw new ArgumentException("The length of the bayer data array must be at least width * height.", nameof(bayerData));
+        }
 
         IntPtr raw = LibRawNative.Initialize(flags);
 
@@ -568,8 +617,8 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_unpack</remarks>
     public void Unpack()
     {
-        CheckDisposed();
-        LibRawException.ThrowIfFailed(LibRawNative.Unpack(_r));
+        this.CheckDisposed();
+        LibRawException.ThrowIfFailed(LibRawNative.Unpack(this._r));
     }
 
     /// <summary>Unpacks the thumbnail image from the opened file into memory.</summary>
@@ -578,8 +627,8 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_unpack_thumb</remarks>
     public void UnpackThumbnail(int thumbnailIndex = 0)
     {
-        CheckDisposed();
-        LibRawException.ThrowIfFailed(LibRawNative.UnpackThumbnailExtended(_r, thumbnailIndex));
+        this.CheckDisposed();
+        LibRawException.ThrowIfFailed(LibRawNative.UnpackThumbnailExtended(this._r, thumbnailIndex));
     }
 
     /// <summary>Converts the raw data into a processed image.</summary>
@@ -587,18 +636,18 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_process</remarks>
     public void DcrawProcess(Action<OutputParams> configure)
     {
-        CheckDisposed();
-        OutputParams p = OutputParams.FromLibRaw(_r);
+        this.CheckDisposed();
+        var p = OutputParams.FromLibRaw(this._r);
         configure(p);
-        p.Commit(_r);
+        p.Commit(this._r);
 
         try
         {
-            LibRawException.ThrowIfFailed(LibRawNative.ProcessDcraw(_r));
+            LibRawException.ThrowIfFailed(LibRawNative.ProcessDcraw(this._r));
         }
         finally
         {
-            OutputParams.FreeLibRawStrings(_r);
+            OutputParams.FreeLibRawStrings(this._r);
         }
     }
 
@@ -607,8 +656,8 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_process</remarks>
     public void DcrawProcess()
     {
-        CheckDisposed();
-        LibRawException.ThrowIfFailed(LibRawNative.ProcessDcraw(_r));
+        this.CheckDisposed();
+        LibRawException.ThrowIfFailed(LibRawNative.ProcessDcraw(this._r));
     }
 
     /// <summary>Converts the raw data into a processed image.</summary>
@@ -617,11 +666,11 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_process</remarks>
     public unsafe ProcessedImage MakeDcrawMemoryImage()
     {
-        CheckDisposed();
-        IntPtr rawImage = LibRawNative.MakeDcrawMemoryImage(_r, out LibRawError errorCode);
+        this.CheckDisposed();
+        IntPtr rawImage = LibRawNative.MakeDcrawMemoryImage(this._r, out LibRawError errorCode);
         LibRawException.ThrowIfFailed(errorCode);
 
-        LibRawProcessedImage* image = (LibRawProcessedImage*)rawImage;
+        var image = (LibRawProcessedImage*)rawImage;
         return new ProcessedImage(image); // need to dispose by user
     }
 
@@ -632,14 +681,14 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_make_mem_thumb</remarks>
     public unsafe ProcessedImage MakeDcrawMemoryThumbnail()
     {
-        CheckDisposed();
-        IntPtr rawImage = LibRawNative.MakeDcrawMemoryThumbnail(_r, out LibRawError errorCode);
+        this.CheckDisposed();
+        IntPtr rawImage = LibRawNative.MakeDcrawMemoryThumbnail(this._r, out LibRawError errorCode);
         LibRawException.ThrowIfFailed(errorCode);
 
-        LibRawProcessedImage* image = (LibRawProcessedImage*)rawImage;
+        var image = (LibRawProcessedImage*)rawImage;
         if (Environment.OSVersion.Platform == PlatformID.Win32NT)
         {
-            LibRawData data = RawData;
+            LibRawData data = this.RawData;
             if (image->Width == 0)
             {
                 image->Width = data.Thumbnail.Width;
@@ -662,8 +711,8 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_ppm_tiff_writer</remarks>
     public void WriteDcrawPpmTiff(string fileName)
     {
-        CheckDisposed();
-        LibRawException.ThrowIfFailed(LibRawNative.WriteDcrawPpmTiff(_r, fileName));
+        this.CheckDisposed();
+        LibRawException.ThrowIfFailed(LibRawNative.WriteDcrawPpmTiff(this._r, fileName));
     }
 
     /// <summary>Writes the thumbnail using Dcraw.</summary>
@@ -671,8 +720,8 @@ public class RawContext : IDisposable
     /// <remarks>Corresponds to the C API function: libraw_dcraw_thumb_writer</remarks>
     public void WriteDcrawThumbnail(string fileName)
     {
-        CheckDisposed();
-        LibRawException.ThrowIfFailed(LibRawNative.WriteDcrawThumbnail(_r, fileName));
+        this.CheckDisposed();
+        LibRawException.ThrowIfFailed(LibRawNative.WriteDcrawThumbnail(this._r, fileName));
     }
 
     /// <summary>
@@ -683,8 +732,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            IntPtr ptr = LibRawNative.GetImageParameters(_r);
+            this.CheckDisposed();
+            IntPtr ptr = LibRawNative.GetImageParameters(this._r);
             return Marshal.PtrToStructure<LibRawImageParams>(ptr);
         }
     }
@@ -697,8 +746,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            IntPtr ptr = LibRawNative.GetImageOtherParameters(_r);
+            this.CheckDisposed();
+            IntPtr ptr = LibRawNative.GetImageOtherParameters(this._r);
             return Marshal.PtrToStructure<LibRawImageOtherParams>(ptr);
         }
     }
@@ -710,8 +759,8 @@ public class RawContext : IDisposable
     {
         get
         {
-            CheckDisposed();
-            IntPtr ptr = LibRawNative.GetLensInformation(_r);
+            this.CheckDisposed();
+            IntPtr ptr = LibRawNative.GetLensInformation(this._r);
             return Marshal.PtrToStructure<LibRawLensInfo>(ptr);
         }
     }

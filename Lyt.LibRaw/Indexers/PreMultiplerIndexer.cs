@@ -7,8 +7,8 @@ internal class PreMultiplerIndexer : IReadOnlyList<float>
 
     public PreMultiplerIndexer(IntPtr r, bool disposed)
     {
-        _r = r;
-        _disposed = disposed;
+        this._r = r;
+        this._disposed = disposed;
     }
 
     /// <seealso cref="LibRawNative.GetPreMultiplier(IntPtr, int)"/> 
@@ -16,11 +16,13 @@ internal class PreMultiplerIndexer : IReadOnlyList<float>
     {
         get
         {
-            CheckDisposed();
-            if (index < 0 || index >= Count)
+            this.CheckDisposed();
+            if (index < 0 || index >= this.Count)
+            {
                 throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
 
-            return LibRawNative.GetPreMultiplier(_r, index);
+            return LibRawNative.GetPreMultiplier(this._r, index);
         }
     }
 
@@ -28,20 +30,19 @@ internal class PreMultiplerIndexer : IReadOnlyList<float>
 
     public IEnumerator<float> GetEnumerator()
     {
-        for (int i = 0; i < Count; i++)
+        for (int i = 0; i < this.Count; i++)
         {
             yield return this[i];
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
     {
-        if (_disposed)
+        if (this._disposed)
+        {
             throw new ObjectDisposedException(nameof(RawContext));
+        }
     }
 }
