@@ -1,15 +1,9 @@
 ﻿namespace Sdcb.LibRaw.Indexers;
 
-internal class PreMultiplerIndexer : IReadOnlyList<float>
+internal class PreMultiplerIndexer(IntPtr r, bool disposed) : IReadOnlyList<float>
 {
-    private readonly IntPtr _r;
-    private readonly bool _disposed;
-
-    public PreMultiplerIndexer(IntPtr r, bool disposed)
-    {
-        this._r = r;
-        this._disposed = disposed;
-    }
+    private readonly IntPtr _r = r;
+    private readonly bool _disposed = disposed;
 
     /// <seealso cref="LibRawNative.GetPreMultiplier(IntPtr, int)"/> 
     public float this[int index]
@@ -39,10 +33,5 @@ internal class PreMultiplerIndexer : IReadOnlyList<float>
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
-    {
-        if (this._disposed)
-        {
-            throw new ObjectDisposedException(nameof(RawContext));
-        }
-    }
+        => ObjectDisposedException.ThrowIf(this._disposed, this);
 }

@@ -11,20 +11,14 @@ public class LibRawException : Exception
     /// <param name="error">The error code that describes the error.</param>
     /// <param name="message">The message that describes the error.</param>
     public LibRawException(LibRawError error, string? message)
-        : base(message ?? $"ErrorCode: {(int)error}({error}), {Marshal.PtrToStringAnsi(LibRawNative.GetErrorMessage(error))!}")
-    {
-        this.ErrorCode = error;
-    }
+        : base(message ?? $"ErrorCode: {(int)error}({error}), {Marshal.PtrToStringAnsi(LibRawNative.GetErrorMessage(error))!}") => this.ErrorCode = error;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LibRawException"/> class with a specified message.
     /// </summary>
     /// <param name="message">The message that describes the error.</param>
     public LibRawException(string message)
-                   : base(message)
-    {
-        this.ErrorCode = LibRawError.UnspecifiedError;
-    }
+                   : base(message) => this.ErrorCode = LibRawError.UnspecifiedError;
 
     /// <summary>
     /// Gets a string that describes the error set by the <see cref="ErrorCode"/> property.

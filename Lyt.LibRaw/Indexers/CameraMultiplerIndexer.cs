@@ -1,15 +1,9 @@
 ﻿namespace Sdcb.LibRaw.Indexers;
 
-internal class CameraMultiplerIndexer : IReadOnlyList<float>
+internal class CameraMultiplerIndexer(IntPtr r, bool disposed) : IReadOnlyList<float>
 {
-    private readonly IntPtr _r;
-    private readonly bool _disposed;
-
-    public CameraMultiplerIndexer(IntPtr r, bool disposed)
-    {
-        this._r = r;
-        this._disposed = disposed;
-    }
+    private readonly IntPtr _r = r;
+    private readonly bool _disposed = disposed;
 
     /// <summary>Gets the white balance coefficients for the camera.</summary>
     /// <seealso cref="LibRawNative.GetCameraMultiplier(IntPtr, int)"/> 
@@ -40,10 +34,5 @@ internal class CameraMultiplerIndexer : IReadOnlyList<float>
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
-    {
-        if (this._disposed)
-        {
-            throw new ObjectDisposedException(nameof(RawContext));
-        }
-    }
+        => ObjectDisposedException.ThrowIf(this._disposed, this);
 }

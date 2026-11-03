@@ -1,15 +1,9 @@
 ﻿namespace Sdcb.LibRaw.Indexers;
 
-internal class UserMultiplierIndexer : IIndexer<float>
+internal class UserMultiplierIndexer(IntPtr r, bool disposed) : IIndexer<float>
 {
-    private readonly IntPtr _r;
-    private readonly bool _disposed;
-
-    public UserMultiplierIndexer(IntPtr r, bool disposed)
-    {
-        this._r = r;
-        this._disposed = disposed;
-    }
+    private readonly IntPtr _r = r;
+    private readonly bool _disposed = disposed;
 
     /// <seealso cref="LibRawNative.SetUserMultiplier"/> 
     /// <seealso cref="LibRawData"/>
@@ -51,10 +45,5 @@ internal class UserMultiplierIndexer : IIndexer<float>
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
-    {
-        if (this._disposed)
-        {
-            throw new ObjectDisposedException(nameof(RawContext));
-        }
-    }
+        => ObjectDisposedException.ThrowIf(this._disposed, this);
 }

@@ -3,9 +3,12 @@
 /// <summary>
 /// A C# wrapper for the Libraw C API, providing high-level features to work with raw images.
 /// </summary>
-public class RawContext : IDisposable
+/// <remarks>
+/// Initializes a new instance of the <see cref="RawContext"/> class.
+/// </remarks>
+public class RawContext(IntPtr libRawContext) : IDisposable
 {
-    private IntPtr _r;
+    private IntPtr _r = libRawContext;
     private bool _disposed;
 
     /// <summary>
@@ -369,14 +372,6 @@ public class RawContext : IDisposable
             LibRawException.ThrowIfFailed(LibRawNative.GetDecoderInfo(this._r, (IntPtr)(&d)));
             return DecoderInfo.FromNative(d);
         }
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RawContext"/> class.
-    /// </summary>
-    public RawContext(IntPtr libRawContext)
-    {
-        this._r = libRawContext;
     }
 
     /// <summary>

@@ -1,15 +1,9 @@
 ﻿namespace Sdcb.LibRaw.Indexers;
 
-internal class GammaIndexer : IIndexer<float>
+internal class GammaIndexer(IntPtr r, bool disposed) : IIndexer<float>
 {
-    private readonly IntPtr _r;
-    private readonly bool _disposed;
-
-    public GammaIndexer(IntPtr r, bool disposed)
-    {
-        this._r = r;
-        this._disposed = disposed;
-    }
+    private readonly IntPtr _r = r;
+    private readonly bool _disposed = disposed;
 
     /// <seealso cref="LibRawNative.SetGamma(IntPtr, int, float)"/> 
     /// <seealso cref="LibRawData"/>
@@ -51,10 +45,5 @@ internal class GammaIndexer : IIndexer<float>
     IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     private void CheckDisposed()
-    {
-        if (this._disposed)
-        {
-            throw new ObjectDisposedException(nameof(RawContext));
-        }
-    }
+        => ObjectDisposedException.ThrowIf(this._disposed, this);
 }
