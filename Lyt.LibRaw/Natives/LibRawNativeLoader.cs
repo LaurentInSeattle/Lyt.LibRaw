@@ -6,10 +6,8 @@ using System.Diagnostics;
 
 internal class LibRawNativeLoader
 {
-    static LibRawNativeLoader()
-    {
-        NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), LibRawImportResolver);
-    }
+    static LibRawNativeLoader() 
+        => NativeLibrary.SetDllImportResolver(Assembly.GetExecutingAssembly(), LibRawImportResolver);
 
     public static void Init()
     {

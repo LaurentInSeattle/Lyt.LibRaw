@@ -12,5 +12,6 @@ public record DecoderInfo(string DecoderName, DecoderFlag DecoderFlags)
     /// </summary>
     /// <param name="native">The native decoder information object.</param>
     /// <returns>The created DecoderInfo record.</returns>
-    public static DecoderInfo FromNative(in LibRawDecoderInfo native) => new(Marshal.PtrToStringAnsi(native.DecoderName)!, native.DecoderFlags);
+    public static DecoderInfo FromNative(in LibRawDecoderInfo native) 
+        => new(Marshal.PtrToStringAnsi(native.DecoderName)!, native.DecoderFlags);
 }

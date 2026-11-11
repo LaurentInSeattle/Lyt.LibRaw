@@ -27,12 +27,7 @@ public class RawContext(IntPtr libRawContext) : IDisposable
     /// </summary>
     /// <exception cref="ObjectDisposedException">Thrown when the object has been disposed.</exception>
     protected void CheckDisposed()
-    {
-        if (this._disposed)
-        {
-            throw new ObjectDisposedException(nameof(RawContext));
-        }
-    }
+        => ObjectDisposedException.ThrowIf(this._disposed, this);
 
     #region properties
     /// <summary>The width of the raw image.</summary>
@@ -411,7 +406,6 @@ public class RawContext(IntPtr libRawContext) : IDisposable
         }
     }
 
-    #region static methods
     /// <summary>Returns an array of supported cameras.</summary>
     /// <returns>An array of strings representing supported cameras.</returns>
     /// <remarks>Corresponds to the C API function: libraw_cameraCount, libraw_cameraList</remarks>
@@ -447,9 +441,7 @@ public class RawContext(IntPtr libRawContext) : IDisposable
             return new Version(major, minor, patch);
         }
     }
-    #endregion
 
-    #region init methods
     /// <summary>Opens a RAW file for processing.</summary>
     /// <param name="filePath">The path to the file to open.</param>
     /// <param name="flags">Flags to modify library behavior during opening.</param>
@@ -605,7 +597,6 @@ public class RawContext(IntPtr libRawContext) : IDisposable
             throw new LibRawException(error, $"Failed opening buffer");
         }
     }
-    #endregion
 
     /// <summary>Unpacks the raw data from the opened file into memory.</summary>
     /// <exception cref="LibRawException" />
